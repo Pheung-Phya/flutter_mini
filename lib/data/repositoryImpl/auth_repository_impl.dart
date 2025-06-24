@@ -7,7 +7,7 @@ import 'package:flutter_mini/domain/repositories/auth_repository.dart';
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 
-  AuthRepositoryImpl(this.remoteDataSource);
+  AuthRepositoryImpl({required this.remoteDataSource});
 
   @override
   Future<UserModel> login(LoginRequest request) {

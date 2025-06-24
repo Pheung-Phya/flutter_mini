@@ -15,7 +15,7 @@ final class AuthLoading extends AuthState {}
 
 // Login States
 final class LoginSuccess extends AuthState {
-  final User user;
+  final UserModel user;
 
   const LoginSuccess(this.user);
 
@@ -34,7 +34,7 @@ final class LoginFailure extends AuthState {
 
 // Register States
 final class RegisterSuccess extends AuthState {
-  final User user;
+  final UserModel user;
 
   const RegisterSuccess(this.user);
 
