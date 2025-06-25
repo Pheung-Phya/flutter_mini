@@ -1,6 +1,9 @@
-import '../models/user_model.dart';
+import 'dart:developer';
+import 'dart:convert';
+
 import '../models/login_request.dart';
 import '../models/register_request.dart';
+import '../models/user_model.dart';
 import '../../core/network/api_client.dart';
 
 class AuthRemoteDataSource {
@@ -13,7 +16,16 @@ class AuthRemoteDataSource {
       '/login',
       data: request.toJson(),
     );
-    return UserModel.fromJson(response.data['user']);
+
+    log(jsonEncode(response.data)); // ✅
+
+    if (!response.data.containsKey('user')) {
+      throw Exception(response.data['message'] ?? 'Unexpected error');
+    }
+
+    return UserModel.fromJson(
+      response.data,
+    ); // ✅ make sure you're using fromResponse to get token too
   }
 
   Future<UserModel> register(RegisterRequest request) async {
@@ -21,7 +33,8 @@ class AuthRemoteDataSource {
       '/register',
       data: request.toJson(),
     );
-    return UserModel.fromJson(response.data['user']);
+
+    return UserModel.fromJson(response.data); // ✅
   }
 
   Future<void> logout() async {

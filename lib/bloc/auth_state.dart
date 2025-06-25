@@ -7,15 +7,12 @@ sealed class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
-// Initial state
 final class AuthInitial extends AuthState {}
 
-// Common loading state
 final class AuthLoading extends AuthState {}
 
-// Login States
 final class LoginSuccess extends AuthState {
-  final UserModel user;
+  final UserEntity user;
 
   const LoginSuccess(this.user);
 
@@ -32,9 +29,8 @@ final class LoginFailure extends AuthState {
   List<Object?> get props => [message];
 }
 
-// Register States
 final class RegisterSuccess extends AuthState {
-  final UserModel user;
+  final UserEntity user;
 
   const RegisterSuccess(this.user);
 
@@ -51,32 +47,12 @@ final class RegisterFailure extends AuthState {
   List<Object?> get props => [message];
 }
 
-// Logout States
 final class LogoutSuccess extends AuthState {}
 
 final class LogoutFailure extends AuthState {
   final String message;
 
   const LogoutFailure(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
-// Change Password States
-final class ChangePasswordSuccess extends AuthState {
-  final String message;
-
-  const ChangePasswordSuccess(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
-final class ChangePasswordFailure extends AuthState {
-  final String message;
-
-  const ChangePasswordFailure(this.message);
 
   @override
   List<Object?> get props => [message];

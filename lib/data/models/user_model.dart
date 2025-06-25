@@ -1,6 +1,7 @@
-import 'package:flutter_mini/domain/entities/user_entity.dart';
+import 'package:equatable/equatable.dart';
+import '../../domain/entities/user_entity.dart';
 
-class UserModel extends UserEntity {
+class UserModel extends UserEntity with EquatableMixin {
   const UserModel({
     required super.id,
     required super.name,
@@ -9,26 +10,31 @@ class UserModel extends UserEntity {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final user = json['user'];
+    if (user == null) {
+      throw Exception("User data is missing from response");
+    }
+
     return UserModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
+      id: user['id'] ?? 0,
+      name: user['name'] ?? '',
+      email: user['email'] ?? '',
       token: json['token'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    final data = {'id': id, 'name': name, 'email': email};
-
+    final data = {'name': name, 'email': email};
     if (token != null) {
       data['token'] = token.toString();
     }
-
     return data;
   }
 
-  @override
-  String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, token: $token)';
+  UserEntity toEntity() {
+    return UserEntity(id: id, name: name, email: email, token: token);
   }
+
+  @override
+  List<Object?> get props => [id, name, email, token];
 }

@@ -2,12 +2,14 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_mini/data/models/login_request.dart';
-import 'package:flutter_mini/data/models/register_request.dart';
+import 'package:flutter_mini/core/storage/token_storage.dart';
 import 'package:flutter_mini/data/models/user_model.dart';
-import 'package:flutter_mini/domain/usecases/login_usecase.dart';
-import 'package:flutter_mini/domain/usecases/logout_usecase.dart';
-import 'package:flutter_mini/domain/usecases/register_usecase.dart';
+import '../../data/models/login_request.dart';
+import '../../data/models/register_request.dart';
+import '../../domain/entities/user_entity.dart';
+import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/register_usecase.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -34,8 +36,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     try {
-      final user = await loginUseCase.call(event.request);
-      emit(LoginSuccess(UserModel(id: 1, name: user.name, email: user.email)));
+      final user = await loginUseCase(event.request);
+      if (user.token != null) {
+        await TokenStorage.saveToken(user.token!);
+      } else {
+        log('❌ Token is null!');
+      }
+
+      emit(LoginSuccess(user));
     } catch (e) {
       log(e.toString());
       emit(LoginFailure(e.toString()));
@@ -45,10 +53,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onRegisterRequested(
     RegisterRequested event,
     Emitter<AuthState> emit,
-  ) async {}
+  ) async {
+    emit(AuthLoading());
+
+    try {
+      final user = await registerUseCase(event.request);
+      emit(RegisterSuccess(user));
+    } catch (e) {
+      log(e.toString());
+      emit(RegisterFailure(e.toString()));
+    }
+  }
 
   Future<void> _onLogoutRequested(
     LogoutRequested event,
     Emitter<AuthState> emit,
-  ) async {}
+  ) async {
+    emit(AuthLoading());
+
+    try {
+      await logoutUseCase();
+      emit(LogoutSuccess());
+    } catch (e) {
+      log(e.toString());
+      emit(LogoutFailure(e.toString()));
+    }
+  }
 }

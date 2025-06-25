@@ -1,28 +1,29 @@
-import 'package:flutter_mini/data/datasources/auth_remote_datasource.dart';
-import 'package:flutter_mini/data/models/login_request.dart';
-import 'package:flutter_mini/data/models/register_request.dart';
-import 'package:flutter_mini/data/models/user_model.dart';
-import 'package:flutter_mini/domain/repositories/auth_repository.dart';
+import '../../domain/entities/user_entity.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_remote_datasource.dart';
+import '../../data/models/login_request.dart';
+import '../../data/models/register_request.dart';
 
-class AuthRepositoryImpl extends AuthRepository {
+class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 
   AuthRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<UserModel> login(LoginRequest request) {
-    return remoteDataSource.login(request);
+  Future<UserEntity> login(LoginRequest request) async {
+    final userModel = await remoteDataSource.login(request);
+    return userModel.toEntity();
   }
 
   @override
-  Future<UserModel> register(RegisterRequest request) {
-    return remoteDataSource.register(request);
+  Future<UserEntity> register(RegisterRequest request) async {
+    final userModel = await remoteDataSource.register(request);
+    return userModel.toEntity();
   }
 
   @override
-  Future<void> logout() {
-    // TODO: implement logout
-    throw UnimplementedError();
+  Future<void> logout() async {
+    await remoteDataSource.logout();
   }
 
   @override
@@ -30,8 +31,7 @@ class AuthRepositoryImpl extends AuthRepository {
     required String oldPassword,
     required String newPassword,
     required String confirmPassword,
-  }) {
-    // TODO: implement changePassword
-    throw UnimplementedError();
+  }) async {
+    // Implement as needed
   }
 }
