@@ -1,6 +1,7 @@
-import 'package:flutter_mini/bloc/auth_bloc.dart';
+import 'package:flutter_mini/bloc/auth/auth_bloc.dart';
 import 'package:flutter_mini/core/network/api_client.dart';
 import 'package:flutter_mini/data/datasources/auth_remote_datasource.dart';
+import 'package:flutter_mini/data/datasources/product_remote_datesorces.dart';
 import 'package:flutter_mini/data/repositoryImpl/auth_repository_impl.dart';
 import 'package:flutter_mini/domain/repositories/auth_repository.dart';
 import 'package:flutter_mini/domain/usecases/logout_usecase.dart';
@@ -15,7 +16,7 @@ void init() {
   sl.registerLazySingleton(() => ApiClient());
 
   // Data Source
-  sl.registerLazySingleton(() => AuthRemoteDataSource(sl<ApiClient>()));
+  sl.registerLazySingleton(() => AuthRemoteDataSource(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -35,4 +36,6 @@ void init() {
       logoutUseCase: sl(),
     ),
   );
+
+  sl.registerLazySingleton(() => ProductRemoteDatesorces(sl<ApiClient>()));
 }

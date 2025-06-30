@@ -1,5 +1,5 @@
 import '../repositories/auth_repository.dart';
-import '../../../data/models/login_request.dart';
+import '../../data/models/user/login_request.dart';
 import '../entities/user_entity.dart';
 
 class LoginUseCase {

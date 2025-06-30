@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/user_entity.dart';
+import '../../../domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity with EquatableMixin {
   const UserModel({

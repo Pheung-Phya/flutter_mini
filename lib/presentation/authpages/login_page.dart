@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_mini/bloc/auth_bloc.dart';
-import 'package:flutter_mini/data/models/login_request.dart';
+import 'package:flutter_mini/bloc/auth/auth_bloc.dart';
+import 'package:flutter_mini/data/models/user/login_request.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

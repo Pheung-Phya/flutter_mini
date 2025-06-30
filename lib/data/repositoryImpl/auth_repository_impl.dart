@@ -1,8 +1,8 @@
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
-import '../../data/models/login_request.dart';
-import '../../data/models/register_request.dart';
+import '../models/user/login_request.dart';
+import '../models/user/register_request.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
