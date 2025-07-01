@@ -25,6 +25,16 @@ class Product extends ProductEntity {
     );
   }
 
+  ProductEntity toProductEntity() {
+    return ProductEntity(
+      id: id,
+      name: name,
+      price: price,
+      stock: stock,
+      image: image,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
@@ -35,7 +45,6 @@ class Product extends ProductEntity {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'Product(id: $id, name: $name, price: $price, stock: $stock';
   }
 }
