@@ -1,57 +1,134 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mini/bloc/product/bloc/product_bloc.dart';
-import 'package:flutter_mini/locator.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ProductBloc>()..add(GetAllProducts()),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Products')),
-        body: BlocBuilder<ProductBloc, ProductState>(
-          builder: (context, state) {
-            if (state is ProductLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ProductError) {
-              return Center(child: Text('Error: ${state.message}'));
-            } else if (state is ProductLoaded) {
-              final products = state.products;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Our Products'),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          if (state is ProductLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ProductError) {
+            return Center(child: Text('Error: ${state.message}'));
+          } else if (state is ProductLoaded) {
+            final products = state.products;
 
-              if (products.isEmpty) {
-                return const Center(child: Text('No products found'));
-              }
+            if (products.isEmpty) {
+              return const Center(child: Text('No products found'));
+            }
 
-              return ListView.builder(
+            return Padding(
+              padding: const EdgeInsets.all(10),
+              child: GridView.builder(
                 itemCount: products.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 2 columns
+                  childAspectRatio: 3 / 4,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
                 itemBuilder: (context, index) {
                   final p = products[index];
-
-                  return ListTile(
-                    leading:
-                        p.image != null
-                            ? Image.network(
-                              'http://10.0.2.2:8000${p.image!}',
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                            : const Icon(Icons.image_not_supported),
-                    title: Text(p.name),
-                    subtitle: Text('\$${p.price.toStringAsFixed(2)}'),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/product-detail',
+                        arguments: p.id,
+                      );
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(15),
+                            ),
+                            child:
+                                p.image != null
+                                    ? Image.network(
+                                      'http://10.0.2.2:8000${p.image!}',
+                                      scale: 1.0,
+                                      height: 120,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                                    : Container(
+                                      height: 120,
+                                      color: Colors.grey.shade200,
+                                      child: const Icon(
+                                        Icons.image_not_supported,
+                                        size: 50,
+                                      ),
+                                    ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              p.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              '\$${p.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                minimumSize: const Size(double.infinity, 36),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                'Add',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
       ),
     );
   }

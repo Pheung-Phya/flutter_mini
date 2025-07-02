@@ -35,7 +35,7 @@ void init() {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
-  sl.registerLazySingleton(() => ProductUsecase(sl())); // ⬅️ product usecase
+  sl.registerLazySingleton(() => ProductUsecase(sl()));
 
   // BLoCs
   sl.registerFactory(

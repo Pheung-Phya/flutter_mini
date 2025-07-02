@@ -11,4 +11,10 @@ class ProductRepositoryImpl extends ProductRepository {
     final product = await productRemoteDatesorces.getAllProducts();
     return product;
   }
+
+  @override
+  Future<ProductEntity> getProductById(int id) async {
+    final product = await productRemoteDatesorces.getProductById(id);
+    return product;
+  }
 }

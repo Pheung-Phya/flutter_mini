@@ -8,3 +8,8 @@ sealed class ProductEvent extends Equatable {
 }
 
 final class GetAllProducts extends ProductEvent {}
+
+final class GetProductById extends ProductEvent {
+  final int id;
+  const GetProductById({required this.id});
+}

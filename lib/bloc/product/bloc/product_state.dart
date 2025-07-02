@@ -29,3 +29,10 @@ final class ProductError extends ProductState {
   @override
   List<Object?> get props => [message];
 }
+
+final class ProductDetailById extends ProductState {
+  final ProductEntity product;
+  const ProductDetailById(this.product);
+  @override
+  List<Object?> get props => [product];
+}

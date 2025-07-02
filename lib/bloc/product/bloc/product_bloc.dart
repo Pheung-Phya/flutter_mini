@@ -10,14 +10,33 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductUsecase productRepository;
 
   ProductBloc(this.productRepository) : super(ProductInitial()) {
-    on<GetAllProducts>((event, emit) async {
-      emit(ProductLoading());
-      try {
-        final products = await productRepository.getAllProduct();
-        emit(ProductLoaded(products));
-      } catch (e) {
-        emit(ProductError(e.toString()));
-      }
-    });
+    on<GetAllProducts>(_onLoadAllProduct);
+    on<GetProductById>(_onLoadDetailProduct);
+  }
+
+  Future<void> _onLoadAllProduct(
+    GetAllProducts even,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final products = await productRepository.getAllProduct();
+      emit(ProductLoaded(products));
+    } catch (e) {
+      emit(ProductError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadDetailProduct(
+    GetProductById even,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(ProductLoading());
+    try {
+      final product = await productRepository.getProductById(even.id);
+      emit(ProductDetailById(product));
+    } catch (e) {
+      emit(ProductError(e.toString()));
+    }
   }
 }

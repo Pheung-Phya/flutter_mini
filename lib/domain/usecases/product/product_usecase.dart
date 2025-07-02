@@ -9,4 +9,8 @@ class ProductUsecase {
   Future<List<ProductEntity>> getAllProduct() {
     return productRepository.getAllProducts();
   }
+
+  Future<ProductEntity> getProductById(int id) {
+    return productRepository.getProductById(id);
+  }
 }

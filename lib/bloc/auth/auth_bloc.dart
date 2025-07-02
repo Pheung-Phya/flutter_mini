@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_mini/core/storage/token_storage.dart';
-import 'package:flutter_mini/data/models/user/user_model.dart';
 import '../../data/models/user/login_request.dart';
 import '../../data/models/user/register_request.dart';
 import '../../../domain/entities/user_entity.dart';
