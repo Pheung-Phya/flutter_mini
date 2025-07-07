@@ -5,7 +5,6 @@ class ApiClient {
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: 'http://10.0.2.2:8000/api', // android
-      // http://127.0.0.1:8000
       //baseUrl: 'http://127.0.0.1:8000/api', // web
       connectTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
