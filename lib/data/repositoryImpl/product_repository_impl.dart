@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter_mini/data/datasources/product_remote_datesorces.dart';
+import 'package:flutter_mini/data/models/product/product.dart';
 import 'package:flutter_mini/domain/entities/product_entity.dart';
 import 'package:flutter_mini/domain/repositories/product_repository.dart';
 
@@ -13,8 +16,9 @@ class ProductRepositoryImpl extends ProductRepository {
   }
 
   @override
-  Future<ProductEntity> getProductById(int id) async {
+  Future<Product> getProductById(int id) async {
     final product = await productRemoteDatesorces.getProductById(id);
+    log('log in repo impl : $product');
     return product;
   }
 }

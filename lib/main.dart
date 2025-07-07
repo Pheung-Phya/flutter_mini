@@ -30,15 +30,34 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
-        routes: {
-          '/': (_) => const SplashPage(),
-          '/menu': (_) => MenuPage(),
-          '/login': (_) => LoginPage(),
-          '/home': (_) => HomePage(),
-          '/product-detail': (context) {
-            final args = ModalRoute.of(context)!.settings.arguments as int;
-            return ProductDetail(id: args);
-          },
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/':
+              return MaterialPageRoute(builder: (_) => const SplashPage());
+
+            case '/menu':
+              return MaterialPageRoute(builder: (_) => MenuPage());
+
+            case '/login':
+              return MaterialPageRoute(builder: (_) => LoginPage());
+
+            case '/home':
+              return MaterialPageRoute(builder: (_) => HomePage());
+
+            case '/product-detail':
+              final id = settings.arguments as int;
+              return MaterialPageRoute(builder: (_) => ProductDetail(id: id));
+
+            default:
+              return MaterialPageRoute(
+                builder:
+                    (_) => Scaffold(
+                      body: Center(
+                        child: Text('No route defined for ${settings.name}'),
+                      ),
+                    ),
+              );
+          }
         },
       ),
     );

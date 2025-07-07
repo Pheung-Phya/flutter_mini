@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mini/presentation/product_pages/home_page.dart';
+import 'package:flutter_mini/presentation/profile_page/profile_page.dart';
 
 // ignore: must_be_immutable
 class MenuPage extends StatelessWidget {
@@ -8,7 +9,7 @@ class MenuPage extends StatelessWidget {
 
   List<Widget> list = [
     HomePage(),
-    Container(color: Colors.red),
+    ProfilePage(),
     Container(color: Colors.pink),
     Container(color: Colors.black),
   ];

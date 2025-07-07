@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mini/bloc/product/bloc/product_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,14 +29,11 @@ class HomePage extends StatelessWidget {
 
             return Padding(
               padding: const EdgeInsets.all(10),
-              child: GridView.builder(
+              child: MasonryGridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
                 itemCount: products.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 columns
-                  childAspectRatio: 3 / 4,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                ),
                 itemBuilder: (context, index) {
                   final p = products[index];
                   return GestureDetector(
@@ -59,12 +58,22 @@ class HomePage extends StatelessWidget {
                             ),
                             child:
                                 p.image != null
-                                    ? Image.network(
-                                      'http://10.0.2.2:8000${p.image!}',
-                                      scale: 1.0,
-                                      height: 120,
+                                    ? CachedNetworkImage(
+                                      imageUrl:
+                                          'http://10.0.2.2:8000${p.image!}',
+                                      placeholder:
+                                          (context, url) => const Padding(
+                                            padding: EdgeInsets.all(20),
+                                            child: Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) =>
+                                              const Icon(Icons.error),
+                                      fit: BoxFit.cover, // or BoxFit.fill
                                       width: double.infinity,
-                                      fit: BoxFit.cover,
                                     )
                                     : Container(
                                       height: 120,
@@ -97,11 +106,10 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Spacer(),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
-                              vertical: 4,
+                              vertical: 8,
                             ),
                             child: ElevatedButton(
                               onPressed: () {},

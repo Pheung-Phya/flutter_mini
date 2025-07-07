@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_mini/domain/entities/product_entity.dart';
@@ -34,6 +36,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
     try {
       final product = await productRepository.getProductById(even.id);
+      log('log in bloc detail $product');
       emit(ProductDetailById(product));
     } catch (e) {
       emit(ProductError(e.toString()));

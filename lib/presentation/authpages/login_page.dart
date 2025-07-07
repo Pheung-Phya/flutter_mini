@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
           }
 
           if (state is LoginSuccess) {
-            Navigator.pushReplacementNamed(context, '/home'); // define route
+            Navigator.pushReplacementNamed(context, '/menu'); // define route
           }
         },
         builder: (context, state) {

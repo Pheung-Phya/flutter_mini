@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_mini/domain/entities/product_entity.dart';
 import 'package:flutter_mini/domain/repositories/product_repository.dart';
 
@@ -11,6 +13,7 @@ class ProductUsecase {
   }
 
   Future<ProductEntity> getProductById(int id) {
+    log('log in usecase : ${productRepository.getProductById(id)}');
     return productRepository.getProductById(id);
   }
 }
