@@ -9,9 +9,9 @@ class MenuPage extends StatelessWidget {
 
   List<Widget> list = [
     HomePage(),
-    ProfilePage(),
     Container(color: Colors.pink),
     Container(color: Colors.black),
+    ProfilePage(),
   ];
 
   @override
