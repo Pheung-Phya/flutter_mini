@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mini/bloc/auth/auth_bloc.dart';
+import 'package:flutter_mini/bloc/cart/bloc/cart_bloc.dart';
 import 'package:flutter_mini/bloc/product/bloc/product_bloc.dart';
 import 'package:flutter_mini/locator.dart';
 import 'package:flutter_mini/presentation/product_pages/home_page.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProductBloc>(
           create: (_) => sl<ProductBloc>()..add(GetAllProducts()),
         ),
+        BlocProvider<CartBloc>(create: (_) => sl<CartBloc>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

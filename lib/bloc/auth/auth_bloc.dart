@@ -6,9 +6,9 @@ import 'package:flutter_mini/core/storage/token_storage.dart';
 import '../../data/models/user/login_request.dart';
 import '../../data/models/user/register_request.dart';
 import '../../../domain/entities/user_entity.dart';
-import '../../../domain/usecases/login_usecase.dart';
-import '../../../domain/usecases/logout_usecase.dart';
-import '../../../domain/usecases/register_usecase.dart';
+import '../../domain/usecases/auth/login_usecase.dart';
+import '../../domain/usecases/auth/logout_usecase.dart';
+import '../../domain/usecases/auth/register_usecase.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
