@@ -25,12 +25,12 @@ void init() {
   sl.registerLazySingleton(() => ApiClient());
 
   // Data Sources
-  sl.registerLazySingleton(() => AuthRemoteDataSource(sl()));
-  sl.registerLazySingleton(() => ProductRemoteDatesorces(sl()));
+  sl.registerLazySingleton(() => AuthRemoteDataSource(sl<ApiClient>()));
+  sl.registerLazySingleton(() => ProductRemoteDatesorces(sl<ApiClient>()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: sl()),
+    () => AuthRepositoryImpl(remoteDataSource: sl<AuthRemoteDataSource>()),
   );
   sl.registerLazySingleton<ProductRepository>(
     () => ProductRepositoryImpl(sl()),

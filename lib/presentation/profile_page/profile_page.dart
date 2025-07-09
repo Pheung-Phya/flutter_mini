@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mini/core/storage/token_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,7 +14,7 @@ class _ProfilePageState extends State<ProfilePage>
   bool _showPrivacyMenu = false;
   bool _showGeneralMenu = false;
 
-  void _logout(BuildContext context) {
+  void _logout(BuildContext context) async {
     showDialog(
       context: context,
       builder:
@@ -29,8 +30,9 @@ class _ProfilePageState extends State<ProfilePage>
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  // Delete token from secure storage
+                  await TokenStorage.deleteToken();
                   Navigator.pushReplacementNamed(context, '/login');
                 },
                 style: ElevatedButton.styleFrom(
@@ -71,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage>
                     children:
                         children.map((e) {
                           return Card(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             margin: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 4,
@@ -129,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withAlpha((255 * 0.3).toInt()),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),

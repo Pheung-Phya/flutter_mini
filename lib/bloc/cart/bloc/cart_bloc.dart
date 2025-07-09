@@ -10,6 +10,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc({required this.cartUseCase}) : super(CartInitial()) {
     on<LoadCart>(_onLoadCart);
     on<AddToCart>(_onAddToCart);
+    on<UpdateCartQuantity>(_onUpdateCartQuantity);
   }
 
   Future<void> _onLoadCart(LoadCart event, Emitter<CartState> emit) async {
@@ -17,6 +18,18 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       final List<CartItemEntity> cartItems = await cartUseCase.getAllCart();
       emit(CartLoaded(cartItems));
+    } catch (e) {
+      emit(CartError(e.toString()));
+    }
+  }
+
+  Future<void> _onUpdateCartQuantity(
+    UpdateCartQuantity event,
+    Emitter<CartState> emit,
+  ) async {
+    try {
+      //await cartUseCase.updateQuantity(event.productId, event.quantity);
+      add(LoadCart());
     } catch (e) {
       emit(CartError(e.toString()));
     }

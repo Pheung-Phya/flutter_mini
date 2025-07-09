@@ -8,12 +8,11 @@ class ProductUsecase {
 
   ProductUsecase(this.productRepository);
 
-  Future<List<ProductEntity>> getAllProduct() {
-    return productRepository.getAllProducts();
+  Future<List<ProductEntity>> getAllProduct() async {
+    return await productRepository.getAllProducts();
   }
 
-  Future<ProductEntity> getProductById(int id) {
-    log('log in usecase : ${productRepository.getProductById(id)}');
-    return productRepository.getProductById(id);
+  Future<ProductEntity> getProductById(int id) async {
+    return await productRepository.getProductById(id);
   }
 }

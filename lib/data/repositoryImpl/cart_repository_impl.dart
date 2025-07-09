@@ -14,7 +14,7 @@ class CartRepositoryImpl implements CartRepository {
   }
 
   @override
-  Future<void> addToCart(int productId) {
-    return remoteDataSource.addToCart(productId);
+  Future<void> addToCart(int productId) async {
+    return await remoteDataSource.addToCart(productId);
   }
 }

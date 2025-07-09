@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_mini/core/network/api_client.dart';
 import 'package:flutter_mini/data/models/product/product.dart';
 
@@ -9,14 +10,19 @@ class ProductRemoteDatesorces {
 
   Future<List<Product>> getAllProducts() async {
     final response = await apiClient.client.get('/product-home');
+    final List<dynamic> rawData = response.data['data'];
 
-    final List<dynamic> productListJson = response.data['data'];
-    log('$productListJson');
-    final products =
-        productListJson
-            .map((json) => Product.fromJson(json as Map<String, dynamic>))
-            .toList();
-    return products;
+    // Convert safely for compute
+    final List<Map<String, dynamic>> safeData = List<Map<String, dynamic>>.from(
+      rawData,
+    );
+
+    return compute(parseProductList, safeData);
+  }
+
+  // This runs in a background isolate
+  static List<Product> parseProductList(List<Map<String, dynamic>> jsonList) {
+    return jsonList.map((json) => Product.fromJson(json)).toList();
   }
 
   Future<Product> getProductById(int id) async {

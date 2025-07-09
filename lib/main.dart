@@ -25,8 +25,13 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
         BlocProvider<ProductBloc>(
-          create: (_) => sl<ProductBloc>()..add(GetAllProducts()),
+          create: (_) {
+            final bloc = sl<ProductBloc>();
+            Future.microtask(() => bloc.add(GetAllProducts()));
+            return bloc;
+          },
         ),
+
         BlocProvider<CartBloc>(create: (_) => sl<CartBloc>()),
       ],
       child: MaterialApp(

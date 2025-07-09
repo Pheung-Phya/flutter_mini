@@ -2,8 +2,7 @@ import 'package:flutter_mini/data/models/product/product.dart';
 import 'package:flutter_mini/domain/entities/cart_item_entity.dart';
 
 class CartItem extends CartItemEntity {
-  CartItem({required int quantity, required Product product})
-    : super(quantity: quantity, product: product);
+  CartItem({required super.quantity, required Product super.product});
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(

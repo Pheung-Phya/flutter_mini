@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mini/bloc/product/bloc/product_bloc.dart';
+import 'package:flutter_mini/bloc/cart/bloc/cart_bloc.dart';
+import 'package:flutter_mini/bloc/cart/bloc/cart_event.dart';
 import 'package:flutter_mini/domain/entities/product_entity.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -27,14 +29,14 @@ class _ProductDetailState extends State<ProductDetail> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Product Detail'),
+        title: const Text('Product Detail'),
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pop(context);
               context.read<ProductBloc>().add(GetAllProducts());
+              Navigator.pop(context);
             },
-            icon: Icon(Icons.back_hand),
+            icon: const Icon(Icons.arrow_back),
           ),
         ],
       ),
@@ -55,13 +57,15 @@ class _ProductDetailState extends State<ProductDetail> {
                       product.name,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
+                    const SizedBox(height: 10),
                     product.image != null
                         ? CachedNetworkImage(
                           imageUrl: 'http://10.0.2.2:8000${product.image!}',
                           placeholder:
-                              (context, url) => CircularProgressIndicator(),
+                              (context, url) =>
+                                  const CircularProgressIndicator(),
                           errorWidget:
-                              (context, url, error) => Icon(Icons.error),
+                              (context, url, error) => const Icon(Icons.error),
                         )
                         : Container(
                           height: 120,
@@ -77,7 +81,30 @@ class _ProductDetailState extends State<ProductDetail> {
                       style: const TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 10),
-                    Text(product.description!),
+                    Text(product.description ?? "No description available"),
+                    const SizedBox(height: 20),
+
+                    /// 👉 Add to Cart Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          context.read<CartBloc>().add(AddToCart(product.id));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Product added to cart"),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.add_shopping_cart),
+                        label: const Text("Add to Cart"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
