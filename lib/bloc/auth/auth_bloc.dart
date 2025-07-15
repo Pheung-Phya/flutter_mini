@@ -9,6 +9,7 @@ import '../../../domain/entities/user_entity.dart';
 import '../../domain/usecases/auth/login_usecase.dart';
 import '../../domain/usecases/auth/logout_usecase.dart';
 import '../../domain/usecases/auth/register_usecase.dart';
+import '../../domain/usecases/auth/otp_verify_usecase.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -17,15 +18,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
+  final OtpVerifyUseCase otpVerifyUseCase;
 
   AuthBloc({
     required this.loginUseCase,
     required this.registerUseCase,
     required this.logoutUseCase,
+    required this.otpVerifyUseCase,
   }) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<RegisterRequested>(_onRegisterRequested);
     on<LogoutRequested>(_onLogoutRequested);
+    on<OtpVerifyRequested>(_onOtpVerifyRequested);
   }
 
   Future<void> _onLoginRequested(
@@ -33,7 +37,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-
     try {
       final user = await loginUseCase(event.request);
       if (user.token != null) {
@@ -41,7 +44,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         log('❌ Token is null!');
       }
-
       emit(LoginSuccess(user));
     } catch (e) {
       log(e.toString());
@@ -54,7 +56,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-
     try {
       final user = await registerUseCase(event.request);
       emit(RegisterSuccess(user));
@@ -64,12 +65,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onOtpVerifyRequested(
+    OtpVerifyRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(OtpVerificationLoading());
+    try {
+      await otpVerifyUseCase(event.email, event.otpCode);
+      emit(OtpVerificationSuccess());
+    } catch (e) {
+      log(e.toString());
+      emit(OtpVerificationFailure(e.toString()));
+    }
+  }
+
   Future<void> _onLogoutRequested(
     LogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-
     try {
       await logoutUseCase();
       await TokenStorage.deleteToken();

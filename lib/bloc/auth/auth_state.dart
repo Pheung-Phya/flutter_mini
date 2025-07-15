@@ -1,3 +1,5 @@
+// auth_state.dart
+
 part of 'auth_bloc.dart';
 
 sealed class AuthState extends Equatable {
@@ -56,4 +58,17 @@ final class LogoutFailure extends AuthState {
 
   @override
   List<Object?> get props => [message];
+}
+
+final class OtpVerificationLoading extends AuthState {}
+
+final class OtpVerificationSuccess extends AuthState {}
+
+final class OtpVerificationFailure extends AuthState {
+  final String error;
+
+  const OtpVerificationFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
 }

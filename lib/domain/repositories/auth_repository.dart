@@ -11,4 +11,5 @@ abstract class AuthRepository {
     required String newPassword,
     required String confirmPassword,
   });
+  Future<void> verifyOtp(String email, String otpCode);
 }

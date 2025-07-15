@@ -12,6 +12,7 @@ import 'package:flutter_mini/domain/repositories/auth_repository.dart';
 import 'package:flutter_mini/domain/repositories/cart_repository.dart';
 import 'package:flutter_mini/domain/repositories/product_repository.dart';
 import 'package:flutter_mini/domain/usecases/auth/logout_usecase.dart';
+import 'package:flutter_mini/domain/usecases/auth/otp_verify_usecase.dart';
 import 'package:flutter_mini/domain/usecases/cart/cart_usecase.dart';
 import 'package:flutter_mini/domain/usecases/product/product_usecase.dart';
 import 'package:flutter_mini/domain/usecases/auth/register_usecase.dart';
@@ -41,6 +42,7 @@ void init() {
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => ProductUsecase(sl()));
+  sl.registerLazySingleton(() => OtpVerifyUseCase(sl()));
 
   // BLoCs
   sl.registerFactory(
@@ -48,6 +50,7 @@ void init() {
       loginUseCase: sl(),
       registerUseCase: sl(),
       logoutUseCase: sl(),
+      otpVerifyUseCase: sl(),
     ),
   );
 

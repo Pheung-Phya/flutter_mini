@@ -1,9 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'package:flutter_mini/bloc/product/bloc/product_bloc.dart';
 import 'package:flutter_mini/domain/entities/product_entity.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -22,15 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Our Products'),
-        backgroundColor: Colors.deepPurple,
-      ),
       body: BlocBuilder<ProductBloc, ProductState>(
-        buildWhen: (previous, current) {
-          // Avoid rebuilding on unnecessary states
-          return current is! ProductLoading;
-        },
         builder: (context, state) {
           if (state is ProductLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -38,36 +33,61 @@ class _HomePageState extends State<HomePage> {
             return Center(child: Text('Error: ${state.message}'));
           } else if (state is ProductLoaded) {
             final products = state.products;
-
             if (products.isEmpty) {
               return const Center(child: Text('No products found'));
             }
 
-            return _buildProductGrid(products);
+            return NotificationListener<UserScrollNotification>(
+              onNotification: (notification) {
+                FocusScope.of(context).unfocus();
+                return false;
+              },
+              child: CustomScrollView(
+                slivers: [
+                  const SliverAppBar(
+                    pinned: true,
+                    floating: true,
+                    snap: true,
+                    expandedHeight: 60.0,
+                    backgroundColor: Colors.deepPurple,
+                    title: Text('Our Products'),
+                    centerTitle: true,
+                  ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _SearchBarDelegate(),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: MasonryGridView.count(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          final p = products[index];
+                          return GestureDetector(
+                            onTap:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  '/product-detail',
+                                  arguments: p.id,
+                                ),
+                            child: _buildProductCard(p),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           } else {
-            return const SizedBox(); // Unknown or initial state
+            return const SizedBox();
           }
-        },
-      ),
-    );
-  }
-
-  Widget _buildProductGrid(List<ProductEntity> products) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: MasonryGridView.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          final p = products[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/product-detail', arguments: p.id);
-            },
-            child: _buildProductCard(p),
-          );
         },
       ),
     );
@@ -80,29 +100,24 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            child:
-                p.image != null
-                    ? CachedNetworkImage(
-                      imageUrl: 'http://10.0.2.2:8000${p.image!}',
-                      placeholder:
-                          (context, url) => const Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                      errorWidget:
-                          (context, url, error) => const Icon(Icons.error),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                    : Container(
-                      height: 120,
-                      width: double.infinity,
-                      color: Colors.grey.shade200,
-                      child: const Icon(Icons.image_not_supported, size: 50),
-                    ),
-          ),
+          if (p.image != null)
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: 'http://10.0.2.2:8000${p.image!}',
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            )
+          else
+            Container(
+              height: 120,
+              width: double.infinity,
+              color: Colors.grey.shade200,
+              child: const Icon(Icons.image_not_supported, size: 50),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -123,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: ElevatedButton(
               onPressed: () {
-                // TODO: Add to Cart functionality here
+                // TODO: Add to cart
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
@@ -139,4 +154,39 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  double get minExtent => 60;
+  @override
+  double get maxExtent => 60;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search...',
+          prefixIcon: Icon(Icons.search),
+          filled: true,
+          fillColor: Colors.grey[200],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }

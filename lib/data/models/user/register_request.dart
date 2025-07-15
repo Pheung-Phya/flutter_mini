@@ -3,12 +3,14 @@ class RegisterRequest {
   final String email;
   final String password;
   final String passwordConfirmation;
+  final String? fcmToken;
 
   RegisterRequest({
     required this.name,
     required this.email,
     required this.password,
     required this.passwordConfirmation,
+    this.fcmToken,
   });
 
   Map<String, dynamic> toJson() {
@@ -17,6 +19,7 @@ class RegisterRequest {
       'email': email,
       'password': password,
       'password_confirmation': passwordConfirmation,
+      'fcm_token': fcmToken,
     };
   }
 }

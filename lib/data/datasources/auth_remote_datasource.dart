@@ -40,4 +40,19 @@ class AuthRemoteDataSource {
   Future<void> logout() async {
     await apiClient.client.post('/logout');
   }
+
+  Future<void> verifyOtp({
+    required String email,
+    required String otpCode,
+  }) async {
+    final response = await apiClient.client.post(
+      '/verify-otp', // Make sure this matches your backend route
+      data: {'email': email, 'otp_code': otpCode},
+    );
+
+    // Handle response status or errors
+    if (response.statusCode != 200) {
+      throw Exception(response.data['message'] ?? 'OTP verification failed');
+    }
+  }
 }

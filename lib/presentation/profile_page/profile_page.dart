@@ -176,7 +176,9 @@ class _ProfilePageState extends State<ProfilePage>
                           'Change Password',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, '/change-password');
+                        },
                       ),
                     ],
                   ),
