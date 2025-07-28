@@ -32,12 +32,27 @@ final class LogoutRequested extends AuthEvent {
   List<Object?> get props => [];
 }
 
-final class OtpVerifyRequested extends AuthEvent {
+class OtpVerifyRequested extends AuthEvent {
   final String email;
+  final String name;
+  final String password;
+  final String passwordConfirmation;
   final String otpCode;
 
-  const OtpVerifyRequested({required this.email, required this.otpCode});
+  const OtpVerifyRequested({
+    required this.email,
+    required this.name,
+    required this.password,
+    required this.passwordConfirmation,
+    required this.otpCode,
+  });
 
   @override
-  List<Object?> get props => [email, otpCode];
+  List<Object> get props => [
+    email,
+    name,
+    password,
+    passwordConfirmation,
+    otpCode,
+  ];
 }

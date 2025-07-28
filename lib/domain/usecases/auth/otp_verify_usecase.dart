@@ -5,7 +5,19 @@ class OtpVerifyUseCase {
 
   OtpVerifyUseCase(this.repository);
 
-  Future<void> call(String email, String otpCode) async {
-    return repository.verifyOtp(email, otpCode);
+  Future<void> call({
+    required String email,
+    required String name,
+    required String password,
+    required String passwordConfirmation,
+    required String otpCode,
+  }) async {
+    return repository.verifyOtp(
+      email: email,
+      name: name,
+      password: password,
+      passwordConfirmation: passwordConfirmation,
+      otpCode: otpCode,
+    );
   }
 }

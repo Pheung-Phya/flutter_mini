@@ -4,7 +4,16 @@ import 'package:flutter_mini/bloc/auth/auth_bloc.dart';
 
 class OtpScreen extends StatefulWidget {
   final String email;
-  const OtpScreen({super.key, required this.email});
+  final String name;
+  final String password;
+  final String passwordConfirmation;
+  const OtpScreen({
+    super.key,
+    required this.email,
+    required this.name,
+    required this.password,
+    required this.passwordConfirmation,
+  });
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -23,7 +32,13 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     context.read<AuthBloc>().add(
-      OtpVerifyRequested(email: widget.email, otpCode: _otpController.text),
+      OtpVerifyRequested(
+        email: widget.email,
+        name: widget.name,
+        password: widget.password,
+        passwordConfirmation: widget.passwordConfirmation,
+        otpCode: _otpController.text.trim(),
+      ),
     );
   }
 

@@ -71,7 +71,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(OtpVerificationLoading());
     try {
-      await otpVerifyUseCase(event.email, event.otpCode);
+      await otpVerifyUseCase(
+        name: event.name,
+        password: event.password,
+        passwordConfirmation: event.passwordConfirmation,
+        email: event.email,
+        otpCode: event.otpCode,
+      );
       emit(OtpVerificationSuccess());
     } catch (e) {
       log(e.toString());

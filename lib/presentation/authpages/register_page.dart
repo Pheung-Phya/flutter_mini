@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_mini/bloc/auth/auth_bloc.dart';
-
-import '../../data/models/user/register_request.dart';
-import 'otp_screen.dart';
+import 'package:flutter_mini/data/models/user/register_request.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -19,29 +16,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final confirmCtrl = TextEditingController();
-
   bool isLoading = false;
 
-  Future<String?> getFcmToken() async {
-    return await FirebaseMessaging.instance.getToken();
-  }
-
-  void submit() async {
+  void submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => isLoading = true);
-
-    final fcmToken = await getFcmToken();
-
-    final registerRequest = RegisterRequest(
-      name: nameCtrl.text.trim(),
-      email: emailCtrl.text.trim(),
-      password: passwordCtrl.text.trim(),
-      passwordConfirmation: confirmCtrl.text.trim(),
-      fcmToken: fcmToken,
+    context.read<AuthBloc>().add(
+      RegisterRequested(
+        RegisterRequest(
+          name: nameCtrl.text.trim(),
+          email: emailCtrl.text.trim(),
+          password: passwordCtrl.text.trim(),
+          passwordConfirmation: confirmCtrl.text.trim(),
+        ),
+      ),
     );
-
-    context.read<AuthBloc>().add(RegisterRequested(registerRequest));
   }
 
   @override
@@ -50,23 +39,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(title: const Text("Register")),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          setState(() => isLoading = state is AuthLoading);
+
           if (state is RegisterSuccess) {
-            // Navigate to OTP Screen with email param
-            Navigator.pushReplacement(
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("OTP sent! Please verify.")),
+            );
+            Navigator.pushReplacementNamed(
               context,
-              MaterialPageRoute(
-                builder: (_) => OtpScreen(email: emailCtrl.text.trim()),
-              ),
+              '/otp',
+              arguments: {
+                'name': nameCtrl.text.trim(),
+                'email': emailCtrl.text.trim(),
+                'password': passwordCtrl.text.trim(),
+                'passwordConfirmation': confirmCtrl.text.trim(),
+              },
             );
           } else if (state is RegisterFailure) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
-          }
-          if (state is AuthLoading) {
-            setState(() => isLoading = true);
-          } else {
-            setState(() => isLoading = false);
           }
         },
         builder: (context, state) {
@@ -85,13 +77,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: emailCtrl,
                     decoration: const InputDecoration(labelText: "Email"),
                     validator:
-                        (v) => !v!.contains('@') ? "Enter valid email" : null,
+                        (v) =>
+                            v != null && v.contains('@')
+                                ? null
+                                : "Invalid email",
                   ),
                   TextFormField(
                     controller: passwordCtrl,
                     obscureText: true,
                     decoration: const InputDecoration(labelText: "Password"),
-                    validator: (v) => v!.length < 6 ? "Min 6 characters" : null,
+                    validator:
+                        (v) =>
+                            v != null && v.length >= 6
+                                ? null
+                                : "Min 6 characters",
                   ),
                   TextFormField(
                     controller: confirmCtrl,
@@ -101,19 +100,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     validator:
                         (v) =>
-                            v != passwordCtrl.text
-                                ? "Passwords don't match"
-                                : null,
+                            v == passwordCtrl.text
+                                ? null
+                                : "Passwords don't match",
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: isLoading ? null : submit,
                     child:
                         isLoading
-                            ? const CircularProgressIndicator(
-                              color: Colors.white,
+                            ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
                             )
                             : const Text("Register & Send OTP"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/otp',
+                        arguments: {
+                          'name': nameCtrl.text.trim(),
+                          'email': emailCtrl.text.trim(),
+                          'password': passwordCtrl.text.trim(),
+                          'passwordConfirmation': confirmCtrl.text.trim(),
+                        },
+                      );
+                    },
+                    child: Text('next'),
                   ),
                 ],
               ),
@@ -122,5 +141,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameCtrl.dispose();
+    emailCtrl.dispose();
+    passwordCtrl.dispose();
+    confirmCtrl.dispose();
+    super.dispose();
   }
 }
