@@ -69,6 +69,12 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _onLoginPressed,
                         child: const Text('Login'),
                       ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    child: Text('Register'),
+                  ),
                 ],
               ),
             ),

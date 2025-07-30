@@ -53,7 +53,6 @@ class _OtpScreenState extends State<OtpScreen> {
               const SnackBar(content: Text("Email verified successfully!")),
             );
             Navigator.popUntil(context, (route) => route.isFirst);
-            // Navigate to login or main screen here
           } else if (state is OtpVerificationFailure) {
             ScaffoldMessenger.of(
               context,

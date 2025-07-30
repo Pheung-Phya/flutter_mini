@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mini/bloc/cart/bloc/cart_bloc.dart';
@@ -59,9 +61,12 @@ class _CartPageState extends State<CartPage> {
       appBar: AppBar(title: const Text('My Cart')),
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
+          log('hello');
           if (state is CartLoading) {
+            log('loading');
             return const Center(child: CircularProgressIndicator());
           } else if (state is CartLoaded) {
+            log("hiiiiiiiiiii");
             if (state.cartItems.isEmpty) {
               return const Center(child: Text('Your cart is empty.'));
             }
@@ -163,7 +168,6 @@ class _CartPageState extends State<CartPage> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // TODO: Place order logic here
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Order placed successfully!"),

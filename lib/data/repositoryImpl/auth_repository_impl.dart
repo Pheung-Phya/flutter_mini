@@ -12,13 +12,13 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserEntity> login(LoginRequest request) async {
     final userModel = await remoteDataSource.login(request);
-    return userModel.toEntity();
+    return userModel;
   }
 
   @override
   Future<UserEntity> register(RegisterRequest request) async {
     final userModel = await remoteDataSource.register(request);
-    return userModel.toEntity();
+    return userModel;
   }
 
   @override

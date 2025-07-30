@@ -119,21 +119,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             )
                             : const Text("Register & Send OTP"),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/otp',
-                        arguments: {
-                          'name': nameCtrl.text.trim(),
-                          'email': emailCtrl.text.trim(),
-                          'password': passwordCtrl.text.trim(),
-                          'passwordConfirmation': confirmCtrl.text.trim(),
-                        },
-                      );
-                    },
-                    child: Text('next'),
-                  ),
                 ],
               ),
             ),

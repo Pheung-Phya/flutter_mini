@@ -1,40 +1,29 @@
-import 'package:equatable/equatable.dart';
-import '../../../domain/entities/user_entity.dart';
+import 'package:flutter_mini/domain/entities/user_entity.dart';
 
-class UserModel extends UserEntity with EquatableMixin {
+class UserModel extends UserEntity {
   const UserModel({
-    required super.id,
-    required super.name,
-    required super.email,
-    super.token,
-  });
+    required int id,
+    required String name,
+    required String email,
+    String? token,
+  }) : super(id: id, name: name, email: email, token: token);
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    final user = json['user'];
-    if (user == null) {
-      throw Exception("User data is missing from response");
-    }
+    final user = json['user'] ?? json;
 
     return UserModel(
-      id: user['id'] ?? 0,
-      name: user['name'] ?? '',
-      email: user['email'] ?? '',
-      token: json['token'],
+      id: user['id'],
+      name: user['name'],
+      email: user['email'],
+      token: json['token'], // assuming token is outside the user object
     );
   }
 
+  factory UserModel.empty() {
+    return const UserModel(id: 0, name: '', email: '', token: '');
+  }
+
   Map<String, dynamic> toJson() {
-    final data = {'name': name, 'email': email};
-    if (token != null) {
-      data['token'] = token.toString();
-    }
-    return data;
+    return {'id': id, 'name': name, 'email': email, 'token': token};
   }
-
-  UserEntity toEntity() {
-    return UserEntity(id: id, name: name, email: email, token: token);
-  }
-
-  @override
-  List<Object?> get props => [id, name, email, token];
 }

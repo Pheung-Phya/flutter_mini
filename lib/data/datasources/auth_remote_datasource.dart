@@ -40,7 +40,7 @@ class AuthRemoteDataSource {
       );
 
       log('[register success] ${response.data}');
-      return UserModel.fromJson(response.data);
+      return UserModel.empty();
     } on DioException catch (e) {
       if (e.response?.statusCode == 422) {
         // Laravel validation error
